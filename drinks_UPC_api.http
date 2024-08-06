@@ -1,0 +1,6 @@
+@drinks_UPC_api_HostAddress = http://localhost:5237
+
+GET {{drinks_UPC_api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
