@@ -1,8 +1,19 @@
 ﻿using System;
 
-namespace api.Models {
-    public class Drink {
+namespace api.Models 
+{
+    public class Drink 
+    {
         public int Id { get; set; }
-        public Bardcode Bardcode { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public int? BrandId { get; set; }
+        public Brand Brand { get; set; }
+        public string Description { get; set; } = string.Empty;
+        public string Capacity {  get; set; } = string.Empty;
+        public int? CategoryId { get; set; }
+        public Category Category { get; set; } = new Category();
+        public string Storage { get; set; } = string.Empty;
+        public Barcode Barcode { get; set; } = new Barcode();
+        public List<string> Composition { get; set; } = new List<string>();
     }
 }
