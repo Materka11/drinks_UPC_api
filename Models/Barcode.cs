@@ -10,7 +10,5 @@ namespace api.Models
         public int ISBN { get; set; }
         public int JAN { get; set; }
         public int ITF_14 { get; set; }
-        public int? DrinkId { get; set; }
-        public Drink Drink { get; set; }
     }
 }
