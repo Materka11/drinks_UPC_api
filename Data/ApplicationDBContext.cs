@@ -1,7 +1,6 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using api.Models;
-using Microsoft.EntityFrameworkCore.Tools;
 
 namespace api.Data
 {
