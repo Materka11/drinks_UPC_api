@@ -16,8 +16,8 @@ namespace api.Models
         public Barcode Barcode { get; set; } = new Barcode();
         public List<string> Composition { get; set; } = new List<string>();
         public int? LabelId { get; set; }
-        public Label Label { get; set; } =  new Label();
-        public NutritionalValues NutritionalValues { get; set; } = new NutritionalValues();
+        public Label Label { get; set; } = new Label();
+        public NutritionalValues? NutritionalValues { get; set; }
         public string Preparation { get; set; } = string.Empty;
     }
 }
