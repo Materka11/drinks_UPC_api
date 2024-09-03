@@ -14,7 +14,7 @@ namespace api.Models
         public Category Category { get; set; } = new Category();
         public string Storage { get; set; } = string.Empty;
         public Barcode Barcode { get; set; } = new Barcode();
-        public List<string> Composition { get; set; } = new List<string>();
+        public string Composition { get; set; } = string.Empty;
         public int? LabelId { get; set; }
         public Label Label { get; set; } = new Label();
         public NutritionalValues? NutritionalValues { get; set; }
