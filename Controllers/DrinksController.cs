@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using api.Data;
 using Microsoft.EntityFrameworkCore;
+using api.Dtos.Drink;
+using api.Mappers;
 
 
 namespace api.Controllers
@@ -22,22 +24,12 @@ namespace api.Controllers
         {
             var drinks = _context.Drinks
                         .Include(d => d.Brand)
+                        .ThenInclude(b => b.Producer)
                         .Include(d => d.Category)
                         .Include(d => d.Label)
                         .Include(d => d.Barcode)
-                        .Select(d => new
-                        {
-                            d.Id,
-                            d.Name,
-                            BrandName = d.Brand.Name,
-                            CategoryName = d.Category.Name,
-                            LabelName = d.Label.Name,
-                            d.Description,
-                            d.Capacity,
-                            d.Storage,
-                            d.Composition,
-                            d.Preparation
-                        })
+                        .Include(d => d.NutritionalValues)
+                        .Select(d => d.ToDrinkDto())
                         .ToList();
 
 
@@ -49,22 +41,10 @@ namespace api.Controllers
         {
             var drink = _context.Drinks
                         .Include(d => d.Brand)
+                        .ThenInclude(b => b.Producer)
                         .Include(d => d.Category)
                         .Include(d => d.Label)
                         .Include(d => d.Barcode)
-                        .Select(d => new
-                        {
-                            d.Id,
-                            d.Name,
-                            BrandName = d.Brand.Name,
-                            CategoryName = d.Category.Name,
-                            LabelName = d.Label.Name,
-                            d.Description,
-                            d.Capacity,
-                            d.Storage,
-                            d.Composition,
-                            d.Preparation
-                        })
                         .FirstOrDefault(d => d.Id == id);
 
             if (drink == null)
@@ -72,7 +52,9 @@ namespace api.Controllers
                 return NotFound();
             }
 
-            return Ok(drink);
+            var drinkDto = drink.ToDrinkDto();
+
+            return Ok(drinkDto);
         }
     }
 }

@@ -1,23 +1,26 @@
 ﻿using System;
+using api.Models;
+using api.Dtos.Brand;
+using api.Dtos.Category;
+using api.Dtos.Label;
 
-namespace api.Models 
+namespace api.Dtos.Drink
 {
-    public class Drink 
+    public class DrinkDto
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
-        public int? BrandId { get; set; }
-        public Brand Brand { get; set; } = new Brand();
+        public BrandDto? Brand { get; set; } = new BrandDto();
         public string Description { get; set; } = string.Empty;
         public string Capacity { get; set; } = string.Empty;
-        public int? CategoryId { get; set; }
-        public Category Category { get; set; } = new Category();
+        public CategoryDto? Category { get; set; } = new CategoryDto();
         public string Storage { get; set; } = string.Empty;
         public Barcode Barcode { get; set; } = new Barcode();
         public string Composition { get; set; } = string.Empty;
-        public int? LabelId { get; set; }
-        public Label? Label { get; set; } = new Label();
+        public LabelDto? Label { get; set; }
         public NutritionalValues? NutritionalValues { get; set; }
         public string Preparation { get; set; } = string.Empty;
     }
+
 }
+

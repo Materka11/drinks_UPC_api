@@ -1,11 +1,12 @@
 ﻿using System;
 
-namespace api.Models 
+namespace api.Dtos.Category
 {
-    public class Category 
+    public class CategoryDto
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
-        public ICollection<Drink>? Drinks { get; } = new List<Drink>();
     }
+
 }
+
