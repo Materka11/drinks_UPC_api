@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace api.Dtos.Producer
+﻿namespace api.Dtos.Producer
 {
     public class ProducerDto
     {

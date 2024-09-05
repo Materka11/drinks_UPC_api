@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace api.Dtos.Label
+﻿namespace api.Dtos.Label
 {
     public class LabelDto
     {
@@ -8,7 +6,7 @@ namespace api.Dtos.Label
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string ShortDescription { get; set; } = string.Empty;
-     
+
     }
 }
 

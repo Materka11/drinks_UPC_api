@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace api.Dtos.Category
+﻿namespace api.Dtos.Category
 {
     public class CategoryDto
     {

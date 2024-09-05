@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace api.Models 
+﻿namespace api.Models
 {
-    public class Barcode 
+    public class Barcode
     {
         public int Id { get; set; }
         public long? UPC { get; set; }

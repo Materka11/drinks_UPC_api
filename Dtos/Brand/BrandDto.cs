@@ -1,5 +1,4 @@
-﻿using System;
-using api.Dtos.Producer;
+﻿using api.Dtos.Producer;
 
 namespace api.Dtos.Brand
 {

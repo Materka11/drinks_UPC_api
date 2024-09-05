@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace api.Models 
+﻿namespace api.Models
 {
-    public class Drink 
+    public class Drink
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;

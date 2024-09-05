@@ -1,9 +1,7 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
-using api.Data;
-using Microsoft.EntityFrameworkCore;
-using api.Dtos.Drink;
+﻿using api.Data;
 using api.Mappers;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace api.Controllers
@@ -37,7 +35,7 @@ namespace api.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetById([FromRoute] int id) 
+        public IActionResult GetById([FromRoute] int id)
         {
             var drink = _context.Drinks
                         .Include(d => d.Brand)

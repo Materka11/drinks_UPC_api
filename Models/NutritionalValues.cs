@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace api.Models
+﻿namespace api.Models
 {
     public class NutritionalValues
     {

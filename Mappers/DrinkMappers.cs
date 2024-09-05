@@ -1,16 +1,15 @@
-﻿using System;
-using api.Dtos.Drink;
-using api.Models;
-using api.Dtos.Brand;
+﻿using api.Dtos.Brand;
 using api.Dtos.Category;
+using api.Dtos.Drink;
 using api.Dtos.Label;
 using api.Dtos.Producer;
+using api.Models;
 
 namespace api.Mappers
 {
     public static class DrinkMappers
     {
-        public static DrinkDto ToDrinkDto(this Drink drinkModel) 
+        public static DrinkDto ToDrinkDto(this Drink drinkModel)
         {
             return new DrinkDto
             {
@@ -32,10 +31,10 @@ namespace api.Mappers
                 {
                     Id = drinkModel.Category.Id,
                     Name = drinkModel.Category.Name,
-                   
+
                 } : null,
                 Storage = drinkModel.Storage,
-                Barcode = drinkModel.Barcode,              
+                Barcode = drinkModel.Barcode,
                 Composition = drinkModel.Composition,
                 Label = drinkModel.Label != null ? new LabelDto
                 {
@@ -43,7 +42,7 @@ namespace api.Mappers
                     Name = drinkModel.Label.Name,
                     Description = drinkModel.Label.Description,
                     ShortDescription = drinkModel.Label.ShortDescription,
-                   
+
                 } : null,
                 NutritionalValues = drinkModel.NutritionalValues,
                 Preparation = drinkModel.Preparation,
