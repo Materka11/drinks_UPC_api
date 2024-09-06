@@ -6,16 +6,16 @@ namespace api.Mappers
 {
     public static class BrandMappers
     {
-        public static BrandDto ToBrandDto(this Brand brandmodel)
+        public static BrandDto ToBrandDto(this Brand brandModel)
         {
             return new BrandDto
             {
-                Id = brandmodel.Id,
-                Name = brandmodel.Name,
-                Producer = brandmodel.Producer != null ? new ProducerDto
+                Id = brandModel.Id,
+                Name = brandModel.Name,
+                Producer = brandModel.Producer != null ? new ProducerDto
                 {
-                    Id = brandmodel.Producer.Id,
-                    Name = brandmodel.Producer.Name,
+                    Id = brandModel.Producer.Id,
+                    Name = brandModel.Producer.Name,
                 } : null
             };
         }
