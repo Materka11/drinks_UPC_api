@@ -19,6 +19,15 @@ namespace api.Mappers
                 } : null
             };
         }
+
+        public static Brand ToBrandFromCreateDto(this CreateBrandRequest brandDtoModel, Producer producerModel)
+        {
+            return new Brand
+            {
+                Name = brandDtoModel.Name,
+                Producer = producerModel
+            };
+        }
     }
 }
 

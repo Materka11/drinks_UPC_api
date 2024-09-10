@@ -1,5 +1,7 @@
 ﻿using api.Data;
+using api.Dtos.Brand;
 using api.Mappers;
+using api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -42,6 +44,28 @@ namespace api.Controllers
             var brandDto = brand.ToBrandDto();
 
             return Ok(brandDto);
+        }
+        [HttpPost]
+        public IActionResult Create([FromBody] CreateBrandRequest brandDto)
+        {
+            var existingProducer = _context.Producers.FirstOrDefault(p => p.Name == brandDto.Producer.Name);
+
+            if (existingProducer == null)
+            {
+                existingProducer = new Producer
+                {
+                    Name = brandDto.Name
+                };
+
+                _context.Producers.Add(existingProducer);
+            }
+
+            var brand = brandDto.ToBrandFromCreateDto(existingProducer);
+
+            _context.Brands.Add(brand);
+            _context.SaveChanges();
+
+            return CreatedAtAction(nameof(GetById), new { id = brand.Id }, brand.ToBrandDto());
         }
     }
 }
