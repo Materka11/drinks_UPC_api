@@ -8,7 +8,7 @@
         public Brand Brand { get; set; } = new Brand();
         public string Description { get; set; } = string.Empty;
         public string Capacity { get; set; } = string.Empty;
-        public int? CategoryId { get; set; }
+        public int CategoryId { get; set; }
         public Category Category { get; set; } = new Category();
         public string Storage { get; set; } = string.Empty;
         public Barcode Barcode { get; set; } = new Barcode();
