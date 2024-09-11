@@ -15,7 +15,7 @@ namespace api.Mappers
             {
                 Id = drinkModel.Id,
                 Name = drinkModel.Name,
-                Brand = drinkModel.Brand != null ? new BrandDto
+                Brand = new BrandDto
                 {
                     Id = drinkModel.Brand.Id,
                     Name = drinkModel.Brand.Name,
@@ -24,15 +24,15 @@ namespace api.Mappers
                         Id = drinkModel.Brand.Producer.Id,
                         Name = drinkModel.Brand.Producer.Name,
                     } : null,
-                } : null,
+                },
                 Description = drinkModel.Description,
                 Capacity = drinkModel.Capacity,
-                Category = drinkModel.Category != null ? new CategoryDto
+                Category = new CategoryDto
                 {
                     Id = drinkModel.Category.Id,
                     Name = drinkModel.Category.Name,
 
-                } : null,
+                },
                 Storage = drinkModel.Storage,
                 Barcode = drinkModel.Barcode,
                 Composition = drinkModel.Composition,
@@ -46,6 +46,24 @@ namespace api.Mappers
                 } : null,
                 NutritionalValues = drinkModel.NutritionalValues,
                 Preparation = drinkModel.Preparation,
+            };
+        }
+
+        public static Drink ToDrinkFromCreateDto(this CreateDrinkRequest drinkDtoModel, Brand brandModel, Category categoryModel, Barcode barcodeModel, Label? labelModel, NutritionalValues? nutritionalValuesModel)
+        {
+            return new Drink
+            {
+                Name = drinkDtoModel.Name,
+                Brand = brandModel,
+                Description = drinkDtoModel.Description,
+                Capacity = drinkDtoModel.Capacity,
+                Category = categoryModel,
+                Storage = drinkDtoModel.Storage,
+                Barcode = barcodeModel,
+                Composition = drinkDtoModel.Composition,
+                Label = labelModel ?? null,
+                NutritionalValues = nutritionalValuesModel ?? null,
+                Preparation = drinkDtoModel.Preparation
             };
         }
     }
