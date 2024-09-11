@@ -1,6 +1,7 @@
 ﻿using api.Data;
 using api.Dtos.Producer;
 using api.Mappers;
+using api.Models;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -35,14 +36,14 @@ namespace api.Controllers
                 return NotFound();
             }
 
-            var producerDto = producer.ToProducerDto();
+            ProducerDto producerDto = producer.ToProducerDto();
 
             return Ok(producerDto);
         }
         [HttpPost]
         public IActionResult Create([FromBody] CreateProducerRequest producerDto)
         {
-            var producer = producerDto.ToProducerFromCreateDto();
+            Producer producer = producerDto.ToProducerFromCreateDto();
             _context.Producers.Add(producer);
             _context.SaveChanges();
 

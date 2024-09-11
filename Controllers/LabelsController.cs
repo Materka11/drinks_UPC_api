@@ -1,4 +1,5 @@
 ﻿using api.Data;
+using api.Dtos.Label;
 using api.Mappers;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,7 +32,7 @@ namespace api.Controllers
                 return NotFound();
             }
 
-            var labelDto = label.ToLabelDto();
+            LabelDto labelDto = label.ToLabelDto();
 
             return Ok(labelDto);
         }

@@ -41,7 +41,7 @@ namespace api.Controllers
                 return NotFound();
             }
 
-            var brandDto = brand.ToBrandDto();
+            BrandDto brandDto = brand.ToBrandDto();
 
             return Ok(brandDto);
         }
@@ -60,7 +60,7 @@ namespace api.Controllers
                 _context.Producers.Add(existingProducer);
             }
 
-            var brand = brandDto.ToBrandFromCreateDto(existingProducer);
+            Brand brand = brandDto.ToBrandFromCreateDto(existingProducer);
 
             _context.Brands.Add(brand);
             _context.SaveChanges();
