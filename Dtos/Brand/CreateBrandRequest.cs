@@ -1,9 +1,11 @@
-﻿namespace api.Dtos.Brand
+﻿using api.Dtos.Producer;
+
+namespace api.Dtos.Brand
 {
     public class CreateBrandRequest
     {
         public string Name { get; set; } = string.Empty;
-        public CreateBrandRequest Producer { get; set; } = new CreateBrandRequest();
+        public CreateProducerRequest Producer { get; set; } = new CreateProducerRequest();
     }
 }
 
