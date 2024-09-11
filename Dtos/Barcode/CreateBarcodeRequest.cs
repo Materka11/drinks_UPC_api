@@ -9,4 +9,3 @@ namespace api.Dtos.Barcode
         public long? ITF_14 { get; set; }
     }
 }
-}
