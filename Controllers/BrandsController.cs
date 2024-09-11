@@ -54,7 +54,7 @@ namespace api.Controllers
             {
                 existingProducer = new Producer
                 {
-                    Name = brandDto.Name
+                    Name = brandDto.Producer.Name
                 };
 
                 _context.Producers.Add(existingProducer);
