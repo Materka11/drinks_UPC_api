@@ -49,6 +49,21 @@ namespace api.Controllers
 
             return CreatedAtAction(nameof(GetById), new { id = producer.Id }, producer.ToProducerDto());
         }
+        [HttpPut("{id}")]
+        public IActionResult Update([FromRoute] int id, [FromBody] UpdateProducerRequest producerDto)
+        {
+            var producer = _context.Producers.FirstOrDefault(p => p.Id == id);
+
+            if (producer == null)
+            {
+                return NotFound();
+            }
+
+            _context.Entry(producer).CurrentValues.SetValues(producerDto);
+            _context.SaveChanges();
+
+            return Ok(producer.ToProducerDto());
+        }
     }
 }
 
