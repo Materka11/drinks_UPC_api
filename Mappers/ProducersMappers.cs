@@ -21,5 +21,13 @@ namespace api.Mappers
                 Name = producerDtoModel.Name,
             };
         }
+
+        public static CreateProducerRequest ToCreateDtoFromProducer(this Producer producerModel)
+        {
+            return new CreateProducerRequest
+            {
+                Name = producerModel.Name
+            };
+        }
     }
 }
