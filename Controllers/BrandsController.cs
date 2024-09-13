@@ -45,22 +45,23 @@ namespace api.Controllers
 
             return Ok(brandDto);
         }
+
         [HttpPost]
-        public IActionResult Create([FromBody] CreateBrandRequest brandDto)
+        public IActionResult Create([FromBody] CreateBrandRequest requestBrand)
         {
-            var existingProducer = _context.Producers.FirstOrDefault(p => p.Name == brandDto.Producer.Name);
+            var existingProducer = _context.Producers.FirstOrDefault(p => p.Name == requestBrand.Producer.Name);
 
             if (existingProducer == null)
             {
                 existingProducer = new Producer
                 {
-                    Name = brandDto.Producer.Name
+                    Name = requestBrand.Producer.Name
                 };
 
                 _context.Producers.Add(existingProducer);
             }
 
-            Brand brand = brandDto.ToBrandFromCreateDto(existingProducer);
+            Brand brand = requestBrand.ToBrandFromCreateDto(existingProducer);
 
             _context.Brands.Add(brand);
             _context.SaveChanges();

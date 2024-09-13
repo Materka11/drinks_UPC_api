@@ -41,16 +41,16 @@ namespace api.Controllers
             return Ok(producerDto);
         }
         [HttpPost]
-        public IActionResult Create([FromBody] CreateProducerRequest producerDto)
+        public IActionResult Create([FromBody] CreateProducerRequest requestProducer)
         {
-            Producer producer = producerDto.ToProducerFromCreateDto();
+            Producer producer = requestProducer.ToProducerFromCreateDto();
             _context.Producers.Add(producer);
             _context.SaveChanges();
 
             return CreatedAtAction(nameof(GetById), new { id = producer.Id }, producer.ToProducerDto());
         }
         [HttpPut("{id}")]
-        public IActionResult Update([FromRoute] int id, [FromBody] UpdateProducerRequest producerDto)
+        public IActionResult Update([FromRoute] int id, [FromBody] UpdateProducerRequest requestProducer)
         {
             var producer = _context.Producers.FirstOrDefault(p => p.Id == id);
 
@@ -59,7 +59,7 @@ namespace api.Controllers
                 return NotFound();
             }
 
-            _context.Entry(producer).CurrentValues.SetValues(producerDto);
+            _context.Entry(producer).CurrentValues.SetValues(requestProducer);
             _context.SaveChanges();
 
             return Ok(producer.ToProducerDto());

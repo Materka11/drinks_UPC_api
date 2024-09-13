@@ -58,19 +58,19 @@ namespace api.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] CreateDrinkRequest drinkDto)
+        public IActionResult Create([FromBody] CreateDrinkRequest requestDrink)
         {
-            var existingBrand = _context.Brands.Include(b => b.Producer).FirstOrDefault(b => b.Name == drinkDto.Brand.Name);
+            var existingBrand = _context.Brands.Include(b => b.Producer).FirstOrDefault(b => b.Name == requestDrink.Brand.Name);
 
             if (existingBrand == null)
             {
-                var exisitingProducer = _context.Producers.FirstOrDefault(p => p.Name == drinkDto.Brand.Producer.Name);
+                var exisitingProducer = _context.Producers.FirstOrDefault(p => p.Name == requestDrink.Brand.Producer.Name);
 
                 if (exisitingProducer == null)
                 {
                     exisitingProducer = new Producer
                     {
-                        Name = drinkDto.Brand.Producer.Name,
+                        Name = requestDrink.Brand.Producer.Name,
                     };
 
                     _context.Producers.Add(exisitingProducer);
@@ -78,27 +78,27 @@ namespace api.Controllers
 
                 existingBrand = new Brand
                 {
-                    Name = drinkDto.Brand.Name,
+                    Name = requestDrink.Brand.Name,
                     Producer = exisitingProducer
                 };
 
                 _context.Brands.Add(existingBrand);
             }
 
-            var existingCategory = _context.Categories.FirstOrDefault(c => c.Id == drinkDto.CategoryId);
+            var existingCategory = _context.Categories.FirstOrDefault(c => c.Id == requestDrink.CategoryId);
 
             if (existingCategory == null)
             {
                 return NotFound();
             }
 
-            Barcode barcode = drinkDto.Barcode.ToBarcodeFromCreateDto();
+            Barcode barcode = requestDrink.Barcode.ToBarcodeFromCreateDto();
 
             Label? label = null;
 
-            if (drinkDto.LabelId != null)
+            if (requestDrink.LabelId != null)
             {
-                label = _context.Labels.FirstOrDefault(l => l.Id == drinkDto.LabelId);
+                label = _context.Labels.FirstOrDefault(l => l.Id == requestDrink.LabelId);
 
                 if (label == null)
                 {
@@ -108,12 +108,12 @@ namespace api.Controllers
 
             NutritionalValues? nutritionalValues = null;
 
-            if (drinkDto.NutritionalValues != null)
+            if (requestDrink.NutritionalValues != null)
             {
-                nutritionalValues = drinkDto.NutritionalValues.ToNutritionalValuesFromCreateDto();
+                nutritionalValues = requestDrink.NutritionalValues.ToNutritionalValuesFromCreateDto();
             }
 
-            Drink drink = drinkDto.ToDrinkFromCreateDto(existingBrand, existingCategory, barcode, label, nutritionalValues);
+            Drink drink = requestDrink.ToDrinkFromCreateDto(existingBrand, existingCategory, barcode, label, nutritionalValues);
 
             _context.Drinks.Add(drink);
             _context.SaveChanges();
