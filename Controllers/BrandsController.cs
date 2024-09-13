@@ -1,7 +1,9 @@
 ﻿using api.Data;
 using api.Dtos.Brand;
+using api.Dtos.Producer;
 using api.Mappers;
 using api.Models;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -67,6 +69,49 @@ namespace api.Controllers
             _context.SaveChanges();
 
             return CreatedAtAction(nameof(GetById), new { id = brand.Id }, brand.ToBrandDto());
+        }
+
+        [HttpPatch("{id}")]
+        public IActionResult UpdatePartial([FromRoute] int id, [FromBody] JsonPatchDocument<CreateBrandRequest> requestBrand)
+        {
+            if (requestBrand == null)
+            {
+                return BadRequest();
+            }
+
+            if (id <= 0)
+            {
+                return BadRequest();
+            }
+
+            var exisitingBrand = _context.Brands.Include(b => b.Producer).FirstOrDefault(b => b.Id == id);
+
+            if (exisitingBrand == null)
+            {
+                return NotFound();
+            }
+
+            if (exisitingBrand.Producer == null)
+            {
+                return BadRequest();
+            }
+
+            CreateProducerRequest producerDto = exisitingBrand.Producer.ToCreateDtoFromProducer();
+            CreateBrandRequest brandDto = exisitingBrand.ToCreateDtoFromBrand(producerDto);
+
+            requestBrand!.ApplyTo(brandDto, ModelState);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            exisitingBrand.Name = brandDto.Name;
+            exisitingBrand.Producer.Name = brandDto.Producer.Name;
+
+            _context.SaveChanges();
+
+            return Ok(exisitingBrand.ToBrandDto());
         }
     }
 }
