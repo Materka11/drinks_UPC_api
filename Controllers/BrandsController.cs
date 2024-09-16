@@ -86,14 +86,9 @@ namespace api.Controllers
 
             var exisitingBrand = _context.Brands.Include(b => b.Producer).FirstOrDefault(b => b.Id == id);
 
-            if (exisitingBrand == null)
+            if (exisitingBrand == null || exisitingBrand.Producer == null)
             {
                 return NotFound();
-            }
-
-            if (exisitingBrand.Producer == null)
-            {
-                return BadRequest();
             }
 
             CreateProducerRequest producerDto = exisitingBrand.Producer.ToCreateDtoFromProducer();
