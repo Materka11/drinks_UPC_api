@@ -1,7 +1,12 @@
 ﻿using api.Data;
+using api.Dtos.Barcode;
+using api.Dtos.Brand;
 using api.Dtos.Drink;
+using api.Dtos.NutritionalValues;
+using api.Dtos.Producer;
 using api.Mappers;
 using api.Models;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -120,5 +125,102 @@ namespace api.Controllers
 
             return CreatedAtAction(nameof(GetById), new { id = drink.Id }, drink.ToDrinkDto());
         }
+
+        [HttpPatch("{id}")]
+        public IActionResult UpdatePartial([FromRoute] int id, [FromBody] JsonPatchDocument<CreateDrinkRequest> requestDrink)
+        {
+            if (requestDrink == null)
+            {
+                return BadRequest();
+            }
+
+            if (id <= 0)
+            {
+                return BadRequest();
+            }
+
+            var exisitingDrink = _context.Drinks
+                                .Include(d => d.Brand)
+                                .ThenInclude(b => b.Producer)
+                                .Include(d => d.Category)
+                                .Include(d => d.Label)
+                                .Include(d => d.Barcode)
+                                .FirstOrDefault(d => d.Id == id);
+
+            if (exisitingDrink == null)
+            {
+                return NotFound();
+            }
+
+            var exisitingBrand = _context.Brands.Include(b => b.Producer).FirstOrDefault(b => b.Id == exisitingDrink.BrandId);
+
+            if (exisitingBrand == null || exisitingBrand.Producer == null)
+            {
+                return NotFound();
+            }
+
+            var exisitingBarcode = _context.Barcodes.FirstOrDefault(b => b.Id == exisitingDrink.Barcode.Id);
+
+            if (exisitingBarcode == null)
+            {
+                return NotFound();
+            }
+
+            var exisitingNutritionalValues = _context.AllNutritionalValues.FirstOrDefault(n => n.Id == exisitingDrink.NutritionalValues.Id);
+
+            CreateProducerRequest producerDto = exisitingBrand.Producer.ToCreateDtoFromProducer();
+            CreateBrandRequest brandDto = exisitingBrand.ToCreateDtoFromBrand(producerDto);
+            CreateBarcodeRequest barcodeDto = exisitingBarcode.ToCreateDtoFromBarcode();
+            CreateNutritionalValuesRequest? nutritionalValuesDto = exisitingNutritionalValues.ToCreateDtoFromNutritionalValues();
+
+            CreateDrinkRequest drinkDto = exisitingDrink.ToCreateDtoFromDrink(brandDto, barcodeDto, nutritionalValuesDto);
+
+            requestDrink.ApplyTo(drinkDto, ModelState);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            exisitingDrink.Name = drinkDto.Name;
+            exisitingDrink.Brand.Name = drinkDto.Brand.Name;
+            exisitingDrink.Brand.Producer.Name = drinkDto.Brand.Producer.Name;
+            exisitingDrink.Description = drinkDto.Description;
+            exisitingDrink.Capacity = drinkDto.Capacity;
+            exisitingDrink.CategoryId = drinkDto.CategoryId;
+            exisitingDrink.Storage = drinkDto.Storage;
+            exisitingDrink.Barcode.EAN = drinkDto.Barcode.EAN;
+            exisitingDrink.Barcode.JAN = drinkDto.Barcode.JAN;
+            exisitingDrink.Barcode.ITF_14 = drinkDto.Barcode.ITF_14;
+            exisitingDrink.Barcode.ISBN = drinkDto.Barcode.ISBN;
+            exisitingDrink.Barcode.UPC = drinkDto.Barcode.UPC;
+            exisitingDrink.Composition = drinkDto.Composition;
+            exisitingDrink.LabelId = drinkDto.LabelId;
+            exisitingDrink.NutritionalValues.Calories = drinkDto.NutritionalValues!.Calories;
+            exisitingDrink.NutritionalValues.EnergyValue = drinkDto.NutritionalValues.EnergyValue;
+            exisitingDrink.NutritionalValues.Fat = drinkDto.NutritionalValues.Fat;
+            exisitingDrink.NutritionalValues.SaturatedFat = drinkDto.NutritionalValues.SaturatedFat;
+            exisitingDrink.NutritionalValues.Carbohydrates = drinkDto.NutritionalValues.Carbohydrates;
+            exisitingDrink.NutritionalValues.Sugar = drinkDto.NutritionalValues.Sugar;
+            exisitingDrink.NutritionalValues.Protein = drinkDto.NutritionalValues.Protein;
+            exisitingDrink.NutritionalValues.Salt = drinkDto.NutritionalValues.Salt;
+            exisitingDrink.NutritionalValues.Fiber = drinkDto.NutritionalValues.Fiber;
+            exisitingDrink.NutritionalValues.Niacin = drinkDto.NutritionalValues.Niacin;
+            exisitingDrink.NutritionalValues.Biotin = drinkDto.NutritionalValues.Biotin;
+            exisitingDrink.NutritionalValues.Zinc = drinkDto.NutritionalValues.Zinc;
+            exisitingDrink.NutritionalValues.Selenium = drinkDto.NutritionalValues.Selenium;
+            exisitingDrink.NutritionalValues.VitaminC6 = drinkDto.NutritionalValues.VitaminC6;
+            exisitingDrink.NutritionalValues.VitaminC = drinkDto.NutritionalValues.VitaminC;
+            exisitingDrink.NutritionalValues.VitaminB5 = drinkDto.NutritionalValues.VitaminB5;
+            exisitingDrink.NutritionalValues.VitaminB6 = drinkDto.NutritionalValues.VitaminB6;
+            exisitingDrink.NutritionalValues.VitaminB12 = drinkDto.NutritionalValues.VitaminB12;
+            exisitingDrink.NutritionalValues.VitaminE = drinkDto.NutritionalValues.VitaminE;
+            exisitingDrink.Preparation = drinkDto.Preparation;
+
+            _context.SaveChanges();
+
+            return Ok(exisitingDrink.ToDrinkDto());
+        }
+
     }
 }
