@@ -16,5 +16,17 @@ namespace api.Mappers
                 ITF_14 = barcodeModel.ITF_14
             };
         }
+
+        public static CreateBarcodeRequest ToCreateDtoFromBarcode(this Barcode barcodeModel)
+        {
+            return new CreateBarcodeRequest
+            {
+                EAN = barcodeModel.EAN,
+                ISBN = barcodeModel.ISBN,
+                JAN = barcodeModel.JAN,
+                ITF_14 = barcodeModel.ITF_14,
+                UPC = barcodeModel.UPC,
+            };
+        }
     }
 }
