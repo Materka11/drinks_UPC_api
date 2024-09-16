@@ -1,7 +1,9 @@
-﻿using api.Dtos.Brand;
+﻿using api.Dtos.Barcode;
+using api.Dtos.Brand;
 using api.Dtos.Category;
 using api.Dtos.Drink;
 using api.Dtos.Label;
+using api.Dtos.NutritionalValues;
 using api.Dtos.Producer;
 using api.Models;
 
@@ -64,6 +66,24 @@ namespace api.Mappers
                 Label = labelModel ?? null,
                 NutritionalValues = nutritionalValuesModel ?? null,
                 Preparation = drinkDtoModel.Preparation
+            };
+        }
+
+        public static CreateDrinkRequest ToCreateDtoFromDrink(this Drink drinkModel, CreateBrandRequest brandDtoModel, CreateBarcodeRequest barcodeDtoModel, CreateNutritionalValuesRequest? nutritionalValuesModel)
+        {
+            return new CreateDrinkRequest
+            {
+                Name = drinkModel.Name,
+                Brand = brandDtoModel,
+                Description = drinkModel.Description,
+                Capacity = drinkModel.Capacity,
+                CategoryId = drinkModel.CategoryId,
+                Storage = drinkModel.Storage,
+                Barcode = barcodeDtoModel,
+                Composition = drinkModel.Composition,
+                LabelId = drinkModel.LabelId ?? null,
+                NutritionalValues = nutritionalValuesModel ?? null,
+                Preparation = drinkModel.Preparation
             };
         }
     }
