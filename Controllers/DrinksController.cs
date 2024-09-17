@@ -145,6 +145,7 @@ namespace api.Controllers
                                 .Include(d => d.Category)
                                 .Include(d => d.Label)
                                 .Include(d => d.Barcode)
+                                .Include(d => d.NutritionalValues)
                                 .FirstOrDefault(d => d.Id == id);
 
             if (exisitingDrink == null)
