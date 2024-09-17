@@ -38,7 +38,7 @@ namespace api.Mappers
                 Storage = drinkModel.Storage,
                 Barcode = drinkModel.Barcode,
                 Composition = drinkModel.Composition,
-                Label = drinkModel.Label != null ? new LabelDto
+                Label = (drinkModel.Label != null && drinkModel.Label.Id != 0) ? new LabelDto
                 {
                     Id = drinkModel.Label.Id,
                     Name = drinkModel.Label.Name,
