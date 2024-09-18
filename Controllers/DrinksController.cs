@@ -167,7 +167,7 @@ namespace api.Controllers
                 return NotFound();
             }
 
-            var exisitingNutritionalValues = _context.AllNutritionalValues.FirstOrDefault(n => n.Id == exisitingDrink.NutritionalValues.Id);
+            var exisitingNutritionalValues = _context.AllNutritionalValues.FirstOrDefault(n => n.Id == exisitingDrink.NutritionalValues!.Id);
 
             CreateProducerRequest producerDto = exisitingBrand.Producer.ToCreateDtoFromProducer();
             CreateBrandRequest brandDto = exisitingBrand.ToCreateDtoFromBrand(producerDto);
@@ -185,7 +185,7 @@ namespace api.Controllers
 
             exisitingDrink.Name = drinkDto.Name;
             exisitingDrink.Brand.Name = drinkDto.Brand.Name;
-            exisitingDrink.Brand.Producer.Name = drinkDto.Brand.Producer.Name;
+            exisitingDrink.Brand.Producer!.Name = drinkDto.Brand.Producer.Name;
             exisitingDrink.Description = drinkDto.Description;
             exisitingDrink.Capacity = drinkDto.Capacity;
             exisitingDrink.CategoryId = drinkDto.CategoryId;
@@ -197,7 +197,7 @@ namespace api.Controllers
             exisitingDrink.Barcode.UPC = drinkDto.Barcode.UPC;
             exisitingDrink.Composition = drinkDto.Composition;
             exisitingDrink.LabelId = drinkDto.LabelId;
-            exisitingDrink.NutritionalValues.Calories = drinkDto.NutritionalValues!.Calories;
+            exisitingDrink.NutritionalValues!.Calories = drinkDto.NutritionalValues!.Calories;
             exisitingDrink.NutritionalValues.EnergyValue = drinkDto.NutritionalValues.EnergyValue;
             exisitingDrink.NutritionalValues.Fat = drinkDto.NutritionalValues.Fat;
             exisitingDrink.NutritionalValues.SaturatedFat = drinkDto.NutritionalValues.SaturatedFat;
