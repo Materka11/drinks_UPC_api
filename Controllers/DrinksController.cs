@@ -222,6 +222,20 @@ namespace api.Controllers
 
             return Ok(exisitingDrink.ToDrinkDto());
         }
+        [HttpDelete("{id}")]
+        public IActionResult Delete([FromRoute] int id)
+        {
+            var drink = _context.Drinks.FirstOrDefault(d => d.Id == id);
 
+            if (drink == null)
+            {
+                return NotFound();
+            }
+
+            _context.Drinks.Remove(drink);
+            _context.SaveChanges();
+
+            return NoContent();
+        }
     }
 }
