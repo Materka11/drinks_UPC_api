@@ -108,6 +108,21 @@ namespace api.Controllers
 
             return Ok(exisitingBrand.ToBrandDto());
         }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete([FromRoute] int id)
+        {
+            var brand = _context.Brands.FirstOrDefault(b => b.Id == id);
+
+            if (brand == null)
+            {
+                return NotFound();
+            }
+
+            _context.Brands.Remove(brand);
+            _context.SaveChanges();
+
+            return NoContent();
+        }
     }
 }
-
