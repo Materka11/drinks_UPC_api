@@ -40,6 +40,7 @@ namespace api.Controllers
 
             return Ok(producerDto);
         }
+
         [HttpPost]
         public IActionResult Create([FromBody] CreateProducerRequest requestProducer)
         {
@@ -49,6 +50,7 @@ namespace api.Controllers
 
             return CreatedAtAction(nameof(GetById), new { id = producer.Id }, producer.ToProducerDto());
         }
+
         [HttpPut("{id}")]
         public IActionResult Update([FromRoute] int id, [FromBody] UpdateProducerRequest requestProducer)
         {
@@ -63,6 +65,22 @@ namespace api.Controllers
             _context.SaveChanges();
 
             return Ok(producer.ToProducerDto());
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete([FromRoute] int id)
+        {
+            var producer = _context.Producers.FirstOrDefault(p => p.Id == id);
+
+            if (producer == null)
+            {
+                return NotFound();
+            };
+
+            _context.Producers.Remove(producer);
+            _context.SaveChanges();
+
+            return NoContent();
         }
     }
 }
