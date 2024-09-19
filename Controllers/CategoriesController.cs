@@ -1,6 +1,7 @@
 ﻿using api.Data;
 using api.Mappers;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Controllers
 {
@@ -15,9 +16,9 @@ namespace api.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var categories = _context.Categories.Select(c => c.toCategoryDto()).ToList();
+            var categories = await _context.Categories.Select(c => c.toCategoryDto()).ToListAsync();
 
             return Ok(categories);
         }
