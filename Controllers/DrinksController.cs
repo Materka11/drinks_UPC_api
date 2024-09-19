@@ -25,9 +25,9 @@ namespace api.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var drinks = _context.Drinks
+            var drinks = await _context.Drinks
                         .Include(d => d.Brand)
                         .ThenInclude(b => b.Producer)
                         .Include(d => d.Category)
@@ -35,22 +35,22 @@ namespace api.Controllers
                         .Include(d => d.Barcode)
                         .Include(d => d.NutritionalValues)
                         .Select(d => d.ToDrinkDto())
-                        .ToList();
+                        .ToListAsync();
 
 
             return Ok(drinks);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetById([FromRoute] int id)
+        public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            var drink = _context.Drinks
+            var drink = await _context.Drinks
                         .Include(d => d.Brand)
                         .ThenInclude(b => b.Producer)
                         .Include(d => d.Category)
                         .Include(d => d.Label)
                         .Include(d => d.Barcode)
-                        .FirstOrDefault(d => d.Id == id);
+                        .FirstOrDefaultAsync(d => d.Id == id);
 
             if (drink == null)
             {
@@ -63,13 +63,13 @@ namespace api.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] CreateDrinkRequest requestDrink)
+        public async Task<IActionResult> Create([FromBody] CreateDrinkRequest requestDrink)
         {
-            var existingBrand = _context.Brands.Include(b => b.Producer).FirstOrDefault(b => b.Name == requestDrink.Brand.Name);
+            var existingBrand = await _context.Brands.Include(b => b.Producer).FirstOrDefaultAsync(b => b.Name == requestDrink.Brand.Name);
 
             if (existingBrand == null)
             {
-                var exisitingProducer = _context.Producers.FirstOrDefault(p => p.Name == requestDrink.Brand.Producer.Name);
+                var exisitingProducer = await _context.Producers.FirstOrDefaultAsync(p => p.Name == requestDrink.Brand.Producer.Name);
 
                 if (exisitingProducer == null)
                 {
@@ -78,7 +78,7 @@ namespace api.Controllers
                         Name = requestDrink.Brand.Producer.Name,
                     };
 
-                    _context.Producers.Add(exisitingProducer);
+                    await _context.Producers.AddAsync(exisitingProducer);
                 }
 
                 existingBrand = new Brand
@@ -87,10 +87,10 @@ namespace api.Controllers
                     Producer = exisitingProducer
                 };
 
-                _context.Brands.Add(existingBrand);
+                await _context.Brands.AddAsync(existingBrand);
             }
 
-            var existingCategory = _context.Categories.FirstOrDefault(c => c.Id == requestDrink.CategoryId);
+            var existingCategory = await _context.Categories.FirstOrDefaultAsync(c => c.Id == requestDrink.CategoryId);
 
             if (existingCategory == null)
             {
@@ -103,7 +103,7 @@ namespace api.Controllers
 
             if (requestDrink.LabelId != null)
             {
-                label = _context.Labels.FirstOrDefault(l => l.Id == requestDrink.LabelId);
+                label = await _context.Labels.FirstOrDefaultAsync(l => l.Id == requestDrink.LabelId);
 
                 if (label == null)
                 {
@@ -120,14 +120,14 @@ namespace api.Controllers
 
             Drink drink = requestDrink.ToDrinkFromCreateDto(existingBrand, existingCategory, barcode, label, nutritionalValues);
 
-            _context.Drinks.Add(drink);
-            _context.SaveChanges();
+            await _context.Drinks.AddAsync(drink);
+            await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetById), new { id = drink.Id }, drink.ToDrinkDto());
         }
 
         [HttpPatch("{id}")]
-        public IActionResult UpdatePartial([FromRoute] int id, [FromBody] JsonPatchDocument<CreateDrinkRequest> requestDrink)
+        public async Task<IActionResult> UpdatePartial([FromRoute] int id, [FromBody] JsonPatchDocument<CreateDrinkRequest> requestDrink)
         {
             if (requestDrink == null)
             {
@@ -139,35 +139,35 @@ namespace api.Controllers
                 return BadRequest();
             }
 
-            var exisitingDrink = _context.Drinks
+            var exisitingDrink = await _context.Drinks
                                 .Include(d => d.Brand)
                                 .ThenInclude(b => b.Producer)
                                 .Include(d => d.Category)
                                 .Include(d => d.Label)
                                 .Include(d => d.Barcode)
                                 .Include(d => d.NutritionalValues)
-                                .FirstOrDefault(d => d.Id == id);
+                                .FirstOrDefaultAsync(d => d.Id == id);
 
             if (exisitingDrink == null)
             {
                 return NotFound();
             }
 
-            var exisitingBrand = _context.Brands.Include(b => b.Producer).FirstOrDefault(b => b.Id == exisitingDrink.BrandId);
+            var exisitingBrand = await _context.Brands.Include(b => b.Producer).FirstOrDefaultAsync(b => b.Id == exisitingDrink.BrandId);
 
             if (exisitingBrand == null || exisitingBrand.Producer == null)
             {
                 return NotFound();
             }
 
-            var exisitingBarcode = _context.Barcodes.FirstOrDefault(b => b.Id == exisitingDrink.Barcode.Id);
+            var exisitingBarcode = await _context.Barcodes.FirstOrDefaultAsync(b => b.Id == exisitingDrink.Barcode.Id);
 
             if (exisitingBarcode == null)
             {
                 return NotFound();
             }
 
-            var exisitingNutritionalValues = _context.AllNutritionalValues.FirstOrDefault(n => n.Id == exisitingDrink.NutritionalValues!.Id);
+            var exisitingNutritionalValues = await _context.AllNutritionalValues.FirstOrDefaultAsync(n => n.Id == exisitingDrink.NutritionalValues!.Id);
 
             CreateProducerRequest producerDto = exisitingBrand.Producer.ToCreateDtoFromProducer();
             CreateBrandRequest brandDto = exisitingBrand.ToCreateDtoFromBrand(producerDto);
@@ -218,14 +218,14 @@ namespace api.Controllers
             exisitingDrink.NutritionalValues.VitaminE = drinkDto.NutritionalValues.VitaminE;
             exisitingDrink.Preparation = drinkDto.Preparation;
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return Ok(exisitingDrink.ToDrinkDto());
         }
         [HttpDelete("{id}")]
-        public IActionResult Delete([FromRoute] int id)
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var drink = _context.Drinks.FirstOrDefault(d => d.Id == id);
+            var drink = await _context.Drinks.FirstOrDefaultAsync(d => d.Id == id);
 
             if (drink == null)
             {
@@ -233,7 +233,7 @@ namespace api.Controllers
             }
 
             _context.Drinks.Remove(drink);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }

@@ -21,22 +21,22 @@ namespace api.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var brands = _context.Brands
+            var brands = await _context.Brands
                         .Include(b => b.Producer)
                         .Select(b => b.ToBrandDto())
-                        .ToList();
+                        .ToListAsync();
 
             return Ok(brands);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetById([FromRoute] int id)
+        public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            var brand = _context.Brands
+            var brand = await _context.Brands
                         .Include(b => b.Producer)
-                        .FirstOrDefault(b => b.Id == id);
+                        .FirstOrDefaultAsync(b => b.Id == id);
 
             if (brand == null)
             {
@@ -49,9 +49,9 @@ namespace api.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] CreateBrandRequest requestBrand)
+        public async Task<IActionResult> Create([FromBody] CreateBrandRequest requestBrand)
         {
-            var existingProducer = _context.Producers.FirstOrDefault(p => p.Name == requestBrand.Producer.Name);
+            var existingProducer = await _context.Producers.FirstOrDefaultAsync(p => p.Name == requestBrand.Producer.Name);
 
             if (existingProducer == null)
             {
@@ -60,19 +60,19 @@ namespace api.Controllers
                     Name = requestBrand.Producer.Name
                 };
 
-                _context.Producers.Add(existingProducer);
+                await _context.Producers.AddAsync(existingProducer);
             }
 
             Brand brand = requestBrand.ToBrandFromCreateDto(existingProducer);
 
-            _context.Brands.Add(brand);
-            _context.SaveChanges();
+            await _context.Brands.AddAsync(brand);
+            await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetById), new { id = brand.Id }, brand.ToBrandDto());
         }
 
         [HttpPatch("{id}")]
-        public IActionResult UpdatePartial([FromRoute] int id, [FromBody] JsonPatchDocument<CreateBrandRequest> requestBrand)
+        public async Task<IActionResult> UpdatePartial([FromRoute] int id, [FromBody] JsonPatchDocument<CreateBrandRequest> requestBrand)
         {
             if (requestBrand == null)
             {
@@ -84,7 +84,7 @@ namespace api.Controllers
                 return BadRequest();
             }
 
-            var exisitingBrand = _context.Brands.Include(b => b.Producer).FirstOrDefault(b => b.Id == id);
+            var exisitingBrand = await _context.Brands.Include(b => b.Producer).FirstOrDefaultAsync(b => b.Id == id);
 
             if (exisitingBrand == null || exisitingBrand.Producer == null)
             {
@@ -104,15 +104,15 @@ namespace api.Controllers
             exisitingBrand.Name = brandDto.Name;
             exisitingBrand.Producer.Name = brandDto.Producer.Name;
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return Ok(exisitingBrand.ToBrandDto());
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete([FromRoute] int id)
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var brand = _context.Brands.FirstOrDefault(b => b.Id == id);
+            var brand = await _context.Brands.FirstOrDefaultAsync(b => b.Id == id);
 
             if (brand == null)
             {
@@ -120,7 +120,7 @@ namespace api.Controllers
             }
 
             _context.Brands.Remove(brand);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }

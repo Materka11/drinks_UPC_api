@@ -3,6 +3,7 @@ using api.Dtos.Producer;
 using api.Mappers;
 using api.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace api.Controllers
@@ -19,17 +20,17 @@ namespace api.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var producers = _context.Producers.Select(p => p.ToProducerDto()).ToList();
+            var producers = await _context.Producers.Select(p => p.ToProducerDto()).ToListAsync();
 
             return Ok(producers);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetById([FromRoute] int id)
+        public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            var producer = _context.Producers.FirstOrDefault(p => p.Id == id);
+            var producer = await _context.Producers.FirstOrDefaultAsync(p => p.Id == id);
 
             if (producer == null)
             {
@@ -42,19 +43,19 @@ namespace api.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] CreateProducerRequest requestProducer)
+        public async Task<IActionResult> Create([FromBody] CreateProducerRequest requestProducer)
         {
             Producer producer = requestProducer.ToProducerFromCreateDto();
-            _context.Producers.Add(producer);
-            _context.SaveChanges();
+            await _context.Producers.AddAsync(producer);
+            await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetById), new { id = producer.Id }, producer.ToProducerDto());
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update([FromRoute] int id, [FromBody] UpdateProducerRequest requestProducer)
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateProducerRequest requestProducer)
         {
-            var producer = _context.Producers.FirstOrDefault(p => p.Id == id);
+            var producer = await _context.Producers.FirstOrDefaultAsync(p => p.Id == id);
 
             if (producer == null)
             {
@@ -62,15 +63,15 @@ namespace api.Controllers
             }
 
             _context.Entry(producer).CurrentValues.SetValues(requestProducer);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return Ok(producer.ToProducerDto());
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete([FromRoute] int id)
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var producer = _context.Producers.FirstOrDefault(p => p.Id == id);
+            var producer = await _context.Producers.FirstOrDefaultAsync(p => p.Id == id);
 
             if (producer == null)
             {
@@ -78,7 +79,7 @@ namespace api.Controllers
             };
 
             _context.Producers.Remove(producer);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }

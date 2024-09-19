@@ -2,6 +2,7 @@
 using api.Dtos.Label;
 using api.Mappers;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Controllers
 {
@@ -16,16 +17,16 @@ namespace api.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var labels = _context.Labels.Select(l => l.ToLabelDto()).ToList();
+            var labels = await _context.Labels.Select(l => l.ToLabelDto()).ToListAsync();
 
             return Ok(labels);
         }
         [HttpGet("{id}")]
-        public IActionResult GetById([FromRoute] int id)
+        public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            var label = _context.Labels.FirstOrDefault(l => l.Id == id);
+            var label = await _context.Labels.FirstOrDefaultAsync(l => l.Id == id);
 
             if (label == null)
             {
