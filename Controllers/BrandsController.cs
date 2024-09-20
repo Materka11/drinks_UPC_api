@@ -1,6 +1,7 @@
 ﻿using api.Data;
 using api.Dtos.Brand;
 using api.Dtos.Producer;
+using api.Interfaces;
 using api.Mappers;
 using api.Models;
 using Microsoft.AspNetCore.JsonPatch;
@@ -14,19 +15,18 @@ namespace api.Controllers
     public class BrandsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IBrandRepository _brandRepo;
 
-        public BrandsController(ApplicationDbContext context)
+        public BrandsController(ApplicationDbContext context, IBrandRepository brandRepo)
         {
             _context = context;
+            _brandRepo = brandRepo;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var brands = await _context.Brands
-                        .Include(b => b.Producer)
-                        .Select(b => b.ToBrandDto())
-                        .ToListAsync();
+            var brands = await _brandRepo.GetAllDtoIncludeProducerAsync();
 
             return Ok(brands);
         }

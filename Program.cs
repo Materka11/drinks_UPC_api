@@ -1,4 +1,6 @@
 using api.Data;
+using api.Interfaces;
+using api.Respository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +17,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     //Debug later delete
     options.EnableSensitiveDataLogging();
 });
+
+builder.Services.AddScoped<IBrandRepository, BrandRepository>();
 
 var app = builder.Build();
 
