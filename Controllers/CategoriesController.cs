@@ -1,7 +1,6 @@
 ﻿using api.Data;
-using api.Mappers;
+using api.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace api.Controllers
 {
@@ -10,15 +9,17 @@ namespace api.Controllers
     public class CategoriesController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        public CategoriesController(ApplicationDbContext context)
+        private readonly ICategoryRepository _categoryRepo;
+        public CategoriesController(ApplicationDbContext context, ICategoryRepository categoryRepo)
         {
             _context = context;
+            _categoryRepo = categoryRepo;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var categories = await _context.Categories.Select(c => c.toCategoryDto()).ToListAsync();
+            var categories = await _categoryRepo.GetAllDtoAsync();
 
             return Ok(categories);
         }
