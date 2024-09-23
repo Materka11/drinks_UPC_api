@@ -39,7 +39,7 @@ namespace api.Respository
             return brandModel;
         }
 
-        public async Task<List<BrandDto>> GetAllDtoIncludeProducerAsync()
+        public async Task<List<BrandDto>> GetAllDtoAsync()
         {
             return await _context.Brands
                         .Include(b => b.Producer)
@@ -47,7 +47,7 @@ namespace api.Respository
                         .ToListAsync();
         }
 
-        public async Task<Brand?> GetByIdIncludeProducerAsync(int id)
+        public async Task<Brand?> GetByIdAsync(int id)
         {
             return await _context.Brands
                         .Include(b => b.Producer)

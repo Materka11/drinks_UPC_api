@@ -26,7 +26,7 @@ namespace api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var brands = await _brandRepo.GetAllDtoIncludeProducerAsync();
+            var brands = await _brandRepo.GetAllDtoAsync();
 
             return Ok(brands);
         }
@@ -34,7 +34,7 @@ namespace api.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            var brand = await _brandRepo.GetByIdIncludeProducerAsync(id);
+            var brand = await _brandRepo.GetByIdAsync(id);
 
             if (brand == null)
             {
@@ -82,7 +82,7 @@ namespace api.Controllers
                 return BadRequest();
             }
 
-            var exisitingBrand = await _brandRepo.GetByIdIncludeProducerAsync(id);
+            var exisitingBrand = await _brandRepo.GetByIdAsync(id);
 
             if (exisitingBrand == null || exisitingBrand.Producer == null)
             {
