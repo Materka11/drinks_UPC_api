@@ -2,6 +2,7 @@ using api.Data;
 using api.Dtos.Brand;
 using api.Interfaces;
 using api.Mappers;
+using api.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Respository
@@ -13,12 +14,44 @@ namespace api.Respository
         {
             _context = context;
         }
-        public Task<List<BrandDto>> GetAllDtoIncludeProducerAsync()
+
+        public async Task<Brand> CreateAsync(Brand brandModel)
         {
-            return _context.Brands
+            await _context.Brands.AddAsync(brandModel);
+            await _context.SaveChangesAsync();
+            return brandModel;
+        }
+
+        public async Task<Brand?> DeleteAsync(int id)
+        {
+            var brandModel = await _context.Brands
+                        .Include(b => b.Producer)
+                        .FirstOrDefaultAsync(b => b.Id == id);
+
+            if (brandModel == null)
+            {
+                return null;
+            }
+
+            _context.Brands.Remove(brandModel);
+            await _context.SaveChangesAsync();
+
+            return brandModel;
+        }
+
+        public async Task<List<BrandDto>> GetAllDtoIncludeProducerAsync()
+        {
+            return await _context.Brands
                         .Include(b => b.Producer)
                         .Select(b => b.ToBrandDto())
                         .ToListAsync();
+        }
+
+        public async Task<Brand?> GetByIdIncludeProducerAsync(int id)
+        {
+            return await _context.Brands
+                        .Include(b => b.Producer)
+                        .FirstOrDefaultAsync(b => b.Id == id);
         }
     }
 }
