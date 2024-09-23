@@ -21,6 +21,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<IBrandRepository, BrandRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IDrinkRepository, DrinkRepository>();
+builder.Services.AddScoped<ILabelRepository, LabelRepository>();
 
 var app = builder.Build();
 
