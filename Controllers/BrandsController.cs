@@ -1,6 +1,7 @@
 ﻿using api.Data;
 using api.Dtos.Brand;
 using api.Dtos.Producer;
+using api.Interfaces;
 using api.Mappers;
 using api.Models;
 using Microsoft.AspNetCore.JsonPatch;
@@ -14,19 +15,18 @@ namespace api.Controllers
     public class BrandsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IBrandRepository _brandRepo;
 
-        public BrandsController(ApplicationDbContext context)
+        public BrandsController(ApplicationDbContext context, IBrandRepository brandRepo)
         {
             _context = context;
+            _brandRepo = brandRepo;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var brands = await _context.Brands
-                        .Include(b => b.Producer)
-                        .Select(b => b.ToBrandDto())
-                        .ToListAsync();
+            var brands = await _brandRepo.GetAllDtoAsync();
 
             return Ok(brands);
         }
@@ -34,9 +34,7 @@ namespace api.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            var brand = await _context.Brands
-                        .Include(b => b.Producer)
-                        .FirstOrDefaultAsync(b => b.Id == id);
+            var brand = await _brandRepo.GetByIdAsync(id);
 
             if (brand == null)
             {
@@ -65,8 +63,7 @@ namespace api.Controllers
 
             Brand brand = requestBrand.ToBrandFromCreateDto(existingProducer);
 
-            await _context.Brands.AddAsync(brand);
-            await _context.SaveChangesAsync();
+            await _brandRepo.CreateAsync(brand);
 
             return CreatedAtAction(nameof(GetById), new { id = brand.Id }, brand.ToBrandDto());
         }
@@ -84,7 +81,7 @@ namespace api.Controllers
                 return BadRequest();
             }
 
-            var exisitingBrand = await _context.Brands.Include(b => b.Producer).FirstOrDefaultAsync(b => b.Id == id);
+            var exisitingBrand = await _brandRepo.GetByIdAsync(id);
 
             if (exisitingBrand == null || exisitingBrand.Producer == null)
             {
@@ -112,15 +109,12 @@ namespace api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var brand = await _context.Brands.FirstOrDefaultAsync(b => b.Id == id);
+            var brand = await _brandRepo.DeleteAsync(id);
 
             if (brand == null)
             {
                 return NotFound();
             }
-
-            _context.Brands.Remove(brand);
-            await _context.SaveChangesAsync();
 
             return NoContent();
         }

@@ -1,4 +1,6 @@
 using api.Data;
+using api.Interfaces;
+using api.Respository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +17,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     //Debug later delete
     options.EnableSensitiveDataLogging();
 });
+
+builder.Services.AddScoped<IBrandRepository, BrandRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IDrinkRepository, DrinkRepository>();
+builder.Services.AddScoped<ILabelRepository, LabelRepository>();
+builder.Services.AddScoped<IProducerRepository, ProducerRepository>();
 
 var app = builder.Build();
 

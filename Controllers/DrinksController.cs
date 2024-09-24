@@ -4,6 +4,7 @@ using api.Dtos.Brand;
 using api.Dtos.Drink;
 using api.Dtos.NutritionalValues;
 using api.Dtos.Producer;
+using api.Interfaces;
 using api.Mappers;
 using api.Models;
 using Microsoft.AspNetCore.JsonPatch;
@@ -18,24 +19,18 @@ namespace api.Controllers
     public class DrinksController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IDrinkRepository _drinkRepo;
 
-        public DrinksController(ApplicationDbContext context)
+        public DrinksController(ApplicationDbContext context, IDrinkRepository drinkRepo)
         {
             _context = context;
+            _drinkRepo = drinkRepo;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var drinks = await _context.Drinks
-                        .Include(d => d.Brand)
-                        .ThenInclude(b => b.Producer)
-                        .Include(d => d.Category)
-                        .Include(d => d.Label)
-                        .Include(d => d.Barcode)
-                        .Include(d => d.NutritionalValues)
-                        .Select(d => d.ToDrinkDto())
-                        .ToListAsync();
+            var drinks = await _drinkRepo.GetAllDtoAsync();
 
 
             return Ok(drinks);
@@ -44,13 +39,7 @@ namespace api.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            var drink = await _context.Drinks
-                        .Include(d => d.Brand)
-                        .ThenInclude(b => b.Producer)
-                        .Include(d => d.Category)
-                        .Include(d => d.Label)
-                        .Include(d => d.Barcode)
-                        .FirstOrDefaultAsync(d => d.Id == id);
+            var drink = await _drinkRepo.GetByIdAsync(id);
 
             if (drink == null)
             {
@@ -120,8 +109,7 @@ namespace api.Controllers
 
             Drink drink = requestDrink.ToDrinkFromCreateDto(existingBrand, existingCategory, barcode, label, nutritionalValues);
 
-            await _context.Drinks.AddAsync(drink);
-            await _context.SaveChangesAsync();
+            await _drinkRepo.CreateAsync(drink);
 
             return CreatedAtAction(nameof(GetById), new { id = drink.Id }, drink.ToDrinkDto());
         }
@@ -139,14 +127,7 @@ namespace api.Controllers
                 return BadRequest();
             }
 
-            var exisitingDrink = await _context.Drinks
-                                .Include(d => d.Brand)
-                                .ThenInclude(b => b.Producer)
-                                .Include(d => d.Category)
-                                .Include(d => d.Label)
-                                .Include(d => d.Barcode)
-                                .Include(d => d.NutritionalValues)
-                                .FirstOrDefaultAsync(d => d.Id == id);
+            var exisitingDrink = await _drinkRepo.GetByIdAsync(id);
 
             if (exisitingDrink == null)
             {
@@ -225,15 +206,12 @@ namespace api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var drink = await _context.Drinks.FirstOrDefaultAsync(d => d.Id == id);
+            var drink = await _drinkRepo.DeleteAsync(id);
 
             if (drink == null)
             {
                 return NotFound();
             }
-
-            _context.Drinks.Remove(drink);
-            await _context.SaveChangesAsync();
 
             return NoContent();
         }

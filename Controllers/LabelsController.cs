@@ -1,8 +1,8 @@
 ﻿using api.Data;
 using api.Dtos.Label;
+using api.Interfaces;
 using api.Mappers;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace api.Controllers
 {
@@ -11,22 +11,24 @@ namespace api.Controllers
     public class LabelsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        public LabelsController(ApplicationDbContext context)
+        private readonly ILabelRepository _labelRepo;
+        public LabelsController(ApplicationDbContext context, ILabelRepository labelRepo)
         {
             _context = context;
+            _labelRepo = labelRepo;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var labels = await _context.Labels.Select(l => l.ToLabelDto()).ToListAsync();
+            var labels = await _labelRepo.GetAllDtoAsync();
 
             return Ok(labels);
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            var label = await _context.Labels.FirstOrDefaultAsync(l => l.Id == id);
+            var label = await _labelRepo.GetByIdAsync(id);
 
             if (label == null)
             {
