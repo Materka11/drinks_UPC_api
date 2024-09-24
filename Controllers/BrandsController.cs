@@ -49,7 +49,6 @@ namespace api.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateBrandRequest requestBrand)
         {
-            //TODO: repo producer
             var existingProducer = await _context.Producers.FirstOrDefaultAsync(p => p.Name == requestBrand.Producer.Name);
 
             if (existingProducer == null)
@@ -58,7 +57,7 @@ namespace api.Controllers
                 {
                     Name = requestBrand.Producer.Name
                 };
-                //TODO: repo producer
+
                 await _context.Producers.AddAsync(existingProducer);
             }
 

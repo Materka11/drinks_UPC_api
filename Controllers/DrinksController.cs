@@ -54,12 +54,10 @@ namespace api.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateDrinkRequest requestDrink)
         {
-            //TODO: brand repo fix
             var existingBrand = await _context.Brands.Include(b => b.Producer).FirstOrDefaultAsync(b => b.Name == requestDrink.Brand.Name);
 
             if (existingBrand == null)
             {
-                //TODO: producer repo
                 var exisitingProducer = await _context.Producers.FirstOrDefaultAsync(p => p.Name == requestDrink.Brand.Producer.Name);
 
                 if (exisitingProducer == null)
@@ -69,7 +67,6 @@ namespace api.Controllers
                         Name = requestDrink.Brand.Producer.Name,
                     };
 
-                    //TODO: producer repo
                     await _context.Producers.AddAsync(exisitingProducer);
                 }
 
@@ -79,11 +76,9 @@ namespace api.Controllers
                     Producer = exisitingProducer
                 };
 
-                //TODO: brand repo
                 await _context.Brands.AddAsync(existingBrand);
             }
 
-            //TODO: category repo
             var existingCategory = await _context.Categories.FirstOrDefaultAsync(c => c.Id == requestDrink.CategoryId);
 
             if (existingCategory == null)
@@ -97,7 +92,6 @@ namespace api.Controllers
 
             if (requestDrink.LabelId != null)
             {
-                //TODO: label repo
                 label = await _context.Labels.FirstOrDefaultAsync(l => l.Id == requestDrink.LabelId);
 
                 if (label == null)
@@ -140,7 +134,6 @@ namespace api.Controllers
                 return NotFound();
             }
 
-            //TODO: brand repo
             var exisitingBrand = await _context.Brands.Include(b => b.Producer).FirstOrDefaultAsync(b => b.Id == exisitingDrink.BrandId);
 
             if (exisitingBrand == null || exisitingBrand.Producer == null)
@@ -148,7 +141,6 @@ namespace api.Controllers
                 return NotFound();
             }
 
-            //TODO: bracodes repo
             var exisitingBarcode = await _context.Barcodes.FirstOrDefaultAsync(b => b.Id == exisitingDrink.Barcode.Id);
 
             if (exisitingBarcode == null)
@@ -156,7 +148,6 @@ namespace api.Controllers
                 return NotFound();
             }
 
-            //TODO: nutritional repo
             var exisitingNutritionalValues = await _context.AllNutritionalValues.FirstOrDefaultAsync(n => n.Id == exisitingDrink.NutritionalValues!.Id);
 
             CreateProducerRequest producerDto = exisitingBrand.Producer.ToCreateDtoFromProducer();
@@ -208,7 +199,6 @@ namespace api.Controllers
             exisitingDrink.NutritionalValues.VitaminE = drinkDto.NutritionalValues.VitaminE;
             exisitingDrink.Preparation = drinkDto.Preparation;
 
-            //TODO: drink repo in the end
             await _context.SaveChangesAsync();
 
             return Ok(exisitingDrink.ToDrinkDto());
