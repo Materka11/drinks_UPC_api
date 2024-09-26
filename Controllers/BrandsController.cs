@@ -31,7 +31,7 @@ namespace api.Controllers
             return Ok(brands);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
             var brand = await _brandRepo.GetByIdAsync(id);
@@ -68,7 +68,7 @@ namespace api.Controllers
             return CreatedAtAction(nameof(GetById), new { id = brand.Id }, brand.ToBrandDto());
         }
 
-        [HttpPatch("{id}")]
+        [HttpPatch("{id:int}")]
         public async Task<IActionResult> UpdatePartial([FromRoute] int id, [FromBody] JsonPatchDocument<CreateBrandRequest> requestBrand)
         {
             if (requestBrand == null)
@@ -106,7 +106,7 @@ namespace api.Controllers
             return Ok(exisitingBrand.ToBrandDto());
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             var brand = await _brandRepo.DeleteAsync(id);
