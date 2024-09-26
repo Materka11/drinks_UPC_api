@@ -25,7 +25,7 @@ namespace api.Controllers
 
             return Ok(labels);
         }
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
             var label = await _labelRepo.GetByIdAsync(id);
