@@ -36,7 +36,7 @@ namespace api.Controllers
             return Ok(drinks);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
             var drink = await _drinkRepo.GetByIdAsync(id);
@@ -114,7 +114,7 @@ namespace api.Controllers
             return CreatedAtAction(nameof(GetById), new { id = drink.Id }, drink.ToDrinkDto());
         }
 
-        [HttpPatch("{id}")]
+        [HttpPatch("{id:int}")]
         public async Task<IActionResult> UpdatePartial([FromRoute] int id, [FromBody] JsonPatchDocument<CreateDrinkRequest> requestDrink)
         {
             if (requestDrink == null)
@@ -203,7 +203,7 @@ namespace api.Controllers
 
             return Ok(exisitingDrink.ToDrinkDto());
         }
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             var drink = await _drinkRepo.DeleteAsync(id);
