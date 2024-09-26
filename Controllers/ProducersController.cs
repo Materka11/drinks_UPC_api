@@ -28,7 +28,7 @@ namespace api.Controllers
             return Ok(producers);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
             var producer = await _producerRepo.GetByIdAsync(id);
@@ -52,7 +52,7 @@ namespace api.Controllers
             return CreatedAtAction(nameof(GetById), new { id = producer.Id }, producer.ToProducerDto());
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id:int}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateProducerRequest requestProducer)
         {
             var producer = await _producerRepo.UpdateAsync(id, requestProducer);
@@ -65,7 +65,7 @@ namespace api.Controllers
             return Ok(producer.ToProducerDto());
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             var producer = await _producerRepo.DeleteAsync(id);
