@@ -2,6 +2,7 @@ using api.Data;
 using api.Dtos.Category;
 using api.Interfaces;
 using api.Mappers;
+using api.Queries;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Respository
@@ -15,10 +16,18 @@ namespace api.Respository
             _context = context;
         }
 
-
-        public Task<List<CategoryDto>> GetAllDtoAsync()
+        public async Task<List<CategoryDto>> GetAllDtoAsync(CategoryGetAllQuery query)
         {
-            return _context.Categories.Select(c => c.toCategoryDto()).ToListAsync();
+            var categoriesQuery = _context.Categories.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(query.CategoryName))
+            {
+                categoriesQuery = categoriesQuery.Where(b => b.Name.Contains(query.CategoryName));
+            }
+
+            var categories = await categoriesQuery.ToListAsync();
+
+            return categories.Select(c => c.toCategoryDto()).ToList();
         }
     }
 }

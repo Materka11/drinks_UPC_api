@@ -1,5 +1,6 @@
 ﻿using api.Data;
 using api.Interfaces;
+using api.Queries;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -17,9 +18,9 @@ namespace api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] CategoryGetAllQuery query)
         {
-            var categories = await _categoryRepo.GetAllDtoAsync();
+            var categories = await _categoryRepo.GetAllDtoAsync(query);
 
             return Ok(categories);
         }

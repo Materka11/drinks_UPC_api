@@ -3,6 +3,7 @@ using api.Dtos.Brand;
 using api.Interfaces;
 using api.Mappers;
 using api.Models;
+using api.Queries;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Respository
@@ -39,12 +40,26 @@ namespace api.Respository
             return brandModel;
         }
 
-        public async Task<List<BrandDto>> GetAllDtoAsync()
+        public async Task<List<BrandDto>> GetAllDtoAsync(BrandGetAllQuery query)
         {
-            return await _context.Brands
+            var brandsQuery = _context.Brands
                         .Include(b => b.Producer)
-                        .Select(b => b.ToBrandDto())
-                        .ToListAsync();
+                        .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(query.BrandName))
+            {
+                brandsQuery = brandsQuery.Where(b => b.Name.Contains(query.BrandName));
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.ProducerId))
+            {
+
+                brandsQuery = brandsQuery.Where(b => b.Producer != null && b.Producer.Id.ToString() == query.ProducerId);
+            }
+
+            var brands = await brandsQuery.ToListAsync();
+
+            return brands.Select(b => b.ToBrandDto()).ToList();
         }
 
         public async Task<Brand?> GetByIdAsync(int id)
