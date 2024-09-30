@@ -7,6 +7,7 @@ using api.Dtos.Producer;
 using api.Interfaces;
 using api.Mappers;
 using api.Models;
+using api.Queries;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -28,9 +29,9 @@ namespace api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] DrinkGetAllQuery query)
         {
-            var drinks = await _drinkRepo.GetAllDtoAsync();
+            var drinks = await _drinkRepo.GetAllDtoAsync(query);
 
 
             return Ok(drinks);
