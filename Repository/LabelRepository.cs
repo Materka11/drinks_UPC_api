@@ -18,8 +18,6 @@ namespace api.Respository
 
         public async Task<List<LabelDto>> GetAllDtoAsync(LabelGetAllQuery query)
         {
-            //return await _context.Labels.Select(l => l.ToLabelDto()).ToListAsync();
-
             var labelsQuery = _context.Labels.AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(query.LabelName))
