@@ -3,6 +3,7 @@ using api.Dtos.Label;
 using api.Interfaces;
 using api.Mappers;
 using api.Models;
+using api.Queries;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Respository
@@ -15,9 +16,20 @@ namespace api.Respository
             _context = context;
         }
 
-        public async Task<List<LabelDto>> GetAllDtoAsync()
+        public async Task<List<LabelDto>> GetAllDtoAsync(LabelGetAllQuery query)
         {
-            return await _context.Labels.Select(l => l.ToLabelDto()).ToListAsync();
+            //return await _context.Labels.Select(l => l.ToLabelDto()).ToListAsync();
+
+            var labelsQuery = _context.Labels.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(query.LabelName))
+            {
+                labelsQuery = labelsQuery.Where(l => l.Name.Contains(query.LabelName));
+            }
+
+            var labels = await labelsQuery.ToListAsync();
+
+            return labels.Select(l => l.ToLabelDto()).ToList();
         }
 
         public async Task<Label?> GetByIdAsync(int id)
