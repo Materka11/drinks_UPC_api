@@ -3,6 +3,7 @@ using api.Dtos.Producer;
 using api.Interfaces;
 using api.Mappers;
 using api.Models;
+using api.Queries;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -21,9 +22,9 @@ namespace api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] ProducerAllQuery query)
         {
-            var producers = await _producerRepo.GetAllDtoAsync();
+            var producers = await _producerRepo.GetAllDtoAsync(query);
 
             return Ok(producers);
         }

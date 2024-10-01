@@ -2,6 +2,7 @@
 using api.Dtos.Label;
 using api.Interfaces;
 using api.Mappers;
+using api.Queries;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -19,9 +20,9 @@ namespace api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] LabelGetAllQuery query)
         {
-            var labels = await _labelRepo.GetAllDtoAsync();
+            var labels = await _labelRepo.GetAllDtoAsync(query);
 
             return Ok(labels);
         }

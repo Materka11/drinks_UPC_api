@@ -3,6 +3,7 @@ using api.Dtos.Producer;
 using api.Interfaces;
 using api.Mappers;
 using api.Models;
+using api.Queries;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Respository
@@ -39,9 +40,18 @@ namespace api.Respository
             return producerModel;
         }
 
-        public async Task<List<ProducerDto>> GetAllDtoAsync()
+        public async Task<List<ProducerDto>> GetAllDtoAsync(ProducerAllQuery query)
         {
-            return await _context.Producers.Select(p => p.ToProducerDto()).ToListAsync();
+            var producersQuery = _context.Producers.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(query.ProducerName))
+            {
+                producersQuery = producersQuery.Where(p => p.Name.Contains(query.ProducerName));
+            }
+
+            var producers = await producersQuery.ToListAsync();
+
+            return producers.Select(p => p.ToProducerDto()).ToList();
         }
 
         public async Task<Producer?> GetByIdAsync(int id)
