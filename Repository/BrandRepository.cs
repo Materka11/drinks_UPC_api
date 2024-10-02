@@ -63,6 +63,11 @@ namespace api.Respository
                 {
                     brandsQuery = query.IsDecsending ? brandsQuery.OrderByDescending(b => b.Name) : brandsQuery.OrderBy(b => b.Name);
                 }
+
+                if (query.SortBy.Equals("ProducerId", StringComparison.OrdinalIgnoreCase))
+                {
+                    brandsQuery = query.IsDecsending ? brandsQuery.OrderByDescending(b => b.ProducerId) : brandsQuery.OrderBy(b => b.ProducerId);
+                }
             }
 
             var brands = await brandsQuery.ToListAsync();
