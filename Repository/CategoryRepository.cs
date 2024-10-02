@@ -25,6 +25,14 @@ namespace api.Respository
                 categoriesQuery = categoriesQuery.Where(b => b.Name.Contains(query.CategoryName));
             }
 
+            if (!string.IsNullOrWhiteSpace(query.SortBy))
+            {
+                if (query.SortBy.Equals("Name", StringComparison.OrdinalIgnoreCase))
+                {
+                    categoriesQuery = query.IsDecsending ? categoriesQuery.OrderByDescending(c => c.Name) : categoriesQuery.OrderBy(c => c.Name);
+                }
+            }
+
             var categories = await categoriesQuery.ToListAsync();
 
             return categories.Select(c => c.toCategoryDto()).ToList();
