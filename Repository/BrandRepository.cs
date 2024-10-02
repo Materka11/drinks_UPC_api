@@ -59,7 +59,7 @@ namespace api.Respository
 
             if (!string.IsNullOrWhiteSpace(query.SortBy))
             {
-                if (query.SortBy.Equals("Name", StringComparison.OrdinalIgnoreCase))
+                if (query.SortBy.Equals("BrandName", StringComparison.OrdinalIgnoreCase))
                 {
                     brandsQuery = query.IsDecsending ? brandsQuery.OrderByDescending(b => b.Name) : brandsQuery.OrderBy(b => b.Name);
                 }
