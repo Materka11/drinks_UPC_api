@@ -25,6 +25,14 @@ namespace api.Respository
                 labelsQuery = labelsQuery.Where(l => l.Name.Contains(query.LabelName));
             }
 
+            if (!string.IsNullOrWhiteSpace(query.SortBy))
+            {
+                if (query.SortBy.Equals("LabelName", StringComparison.OrdinalIgnoreCase))
+                {
+                    labelsQuery = query.isDecsending ? labelsQuery.OrderByDescending(l => l.Name) : labelsQuery.OrderBy(l => l.Name);
+                }
+            }
+
             var labels = await labelsQuery.ToListAsync();
 
             return labels.Select(l => l.ToLabelDto()).ToList();
