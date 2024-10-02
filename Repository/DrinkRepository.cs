@@ -123,6 +123,56 @@ namespace api.Respository
                 drinksQuery = drinksQuery.Where(b => b.Label != null && b.Label.Name.Contains(query.LabelName));
             }
 
+            if (!string.IsNullOrWhiteSpace(query.SortBy))
+            {
+                if (query.SortBy.Equals("DrinkName", StringComparison.OrdinalIgnoreCase))
+                {
+                    drinksQuery = query.isDecsending ? drinksQuery.OrderByDescending(d => d.Name) : drinksQuery.OrderBy(d => d.Name);
+                }
+
+                if (query.SortBy.Equals("BrandId", StringComparison.OrdinalIgnoreCase))
+                {
+                    drinksQuery = query.isDecsending ? drinksQuery.OrderByDescending(d => d.BrandId) : drinksQuery.OrderBy(d => d.BrandId);
+                }
+
+                if (query.SortBy.Equals("BrandName", StringComparison.OrdinalIgnoreCase))
+                {
+                    drinksQuery = query.isDecsending ? drinksQuery.OrderByDescending(d => d.Brand.Name) : drinksQuery.OrderBy(d => d.Brand.Name);
+                }
+
+                if (query.SortBy.Equals("ProducerId", StringComparison.OrdinalIgnoreCase))
+                {
+                    drinksQuery = query.isDecsending ? drinksQuery.OrderByDescending(d => d.Brand.ProducerId) : drinksQuery.OrderBy(d => d.Brand.ProducerId);
+                }
+
+                if (query.SortBy.Equals("ProducerName", StringComparison.OrdinalIgnoreCase))
+                {
+                    drinksQuery = query.isDecsending
+                        ? drinksQuery.OrderByDescending(d => d.Brand != null && d.Brand.Producer != null ? d.Brand.Producer.Name : string.Empty)
+                        : drinksQuery.OrderBy(d => d.Brand != null && d.Brand.Producer != null ? d.Brand.Producer.Name : string.Empty);
+                }
+
+                if (query.SortBy.Equals("CategoryId", StringComparison.OrdinalIgnoreCase))
+                {
+                    drinksQuery = query.isDecsending ? drinksQuery.OrderByDescending(d => d.CategoryId) : drinksQuery.OrderBy(d => d.CategoryId);
+                }
+
+                if (query.SortBy.Equals("CategoryName", StringComparison.OrdinalIgnoreCase))
+                {
+                    drinksQuery = query.isDecsending ? drinksQuery.OrderByDescending(d => d.Category.Name) : drinksQuery.OrderBy(d => d.Category.Name);
+                }
+
+                if (query.SortBy.Equals("LabelId", StringComparison.OrdinalIgnoreCase))
+                {
+                    drinksQuery = query.isDecsending ? drinksQuery.OrderByDescending(d => d.LabelId) : drinksQuery.OrderBy(d => d.LabelId);
+                }
+
+                if (query.SortBy.Equals("LabelName", StringComparison.OrdinalIgnoreCase))
+                {
+                    drinksQuery = query.isDecsending ? drinksQuery.OrderByDescending(d => d.Label != null ? d.Label.Name : string.Empty) : drinksQuery.OrderBy(d => d.Label != null ? d.Label.Name : string.Empty);
+                }
+            }
+
             var drinks = await drinksQuery.ToListAsync();
 
             return drinks.Select(d => d.ToDrinkDto()).ToList();
