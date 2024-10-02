@@ -27,7 +27,7 @@ namespace api.Respository
 
             if (!string.IsNullOrWhiteSpace(query.SortBy))
             {
-                if (query.SortBy.Equals("Name", StringComparison.OrdinalIgnoreCase))
+                if (query.SortBy.Equals("CategoryName", StringComparison.OrdinalIgnoreCase))
                 {
                     categoriesQuery = query.IsDecsending ? categoriesQuery.OrderByDescending(c => c.Name) : categoriesQuery.OrderBy(c => c.Name);
                 }
