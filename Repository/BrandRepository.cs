@@ -61,7 +61,7 @@ namespace api.Respository
             {
                 if (query.SortBy.Equals("Name", StringComparison.OrdinalIgnoreCase))
                 {
-                    brandsQuery = query.IsDecsending ? brandsQuery.OrderByDescending(s => s.Name) : brandsQuery.OrderBy(s => s.Name);
+                    brandsQuery = query.IsDecsending ? brandsQuery.OrderByDescending(b => b.Name) : brandsQuery.OrderBy(b => b.Name);
                 }
             }
 
