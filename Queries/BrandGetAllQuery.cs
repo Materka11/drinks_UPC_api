@@ -5,5 +5,9 @@ namespace api.Queries
         public string? BrandName { get; set; } = null;
 
         public string? ProducerId { get; set; } = null;
+
+        public string? SortBy { get; set; } = null;
+
+        public bool IsDecsending { get; set; } = false;
     }
 }
