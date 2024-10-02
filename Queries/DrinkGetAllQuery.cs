@@ -23,5 +23,10 @@ namespace api.Queries
         public string? LabelId { get; set; } = null;
 
         public string? LabelName { get; set; } = null;
+
+        public string? SortBy { get; set; } = null;
+
+        public bool isDecsending { get; set; } = false;
+
     }
 }

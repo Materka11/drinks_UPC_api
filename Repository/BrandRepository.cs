@@ -57,6 +57,19 @@ namespace api.Respository
                 brandsQuery = brandsQuery.Where(b => b.Producer != null && b.Producer.Id.ToString() == query.ProducerId);
             }
 
+            if (!string.IsNullOrWhiteSpace(query.SortBy))
+            {
+                if (query.SortBy.Equals("BrandName", StringComparison.OrdinalIgnoreCase))
+                {
+                    brandsQuery = query.IsDecsending ? brandsQuery.OrderByDescending(b => b.Name) : brandsQuery.OrderBy(b => b.Name);
+                }
+
+                if (query.SortBy.Equals("ProducerId", StringComparison.OrdinalIgnoreCase))
+                {
+                    brandsQuery = query.IsDecsending ? brandsQuery.OrderByDescending(b => b.ProducerId) : brandsQuery.OrderBy(b => b.ProducerId);
+                }
+            }
+
             var brands = await brandsQuery.ToListAsync();
 
             return brands.Select(b => b.ToBrandDto()).ToList();

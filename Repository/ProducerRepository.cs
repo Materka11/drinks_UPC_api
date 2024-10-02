@@ -49,6 +49,14 @@ namespace api.Respository
                 producersQuery = producersQuery.Where(p => p.Name.Contains(query.ProducerName));
             }
 
+            if (!string.IsNullOrWhiteSpace(query.SortBy))
+            {
+                if (query.SortBy.Equals("ProducerName", StringComparison.OrdinalIgnoreCase))
+                {
+                    producersQuery = query.isDecsending ? producersQuery.OrderByDescending(p => p.Name) : producersQuery.OrderBy(p => p.Name);
+                }
+            }
+
             var producers = await producersQuery.ToListAsync();
 
             return producers.Select(p => p.ToProducerDto()).ToList();
