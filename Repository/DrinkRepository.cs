@@ -173,7 +173,9 @@ namespace api.Respository
                 }
             }
 
-            var drinks = await drinksQuery.ToListAsync();
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+
+            var drinks = await drinksQuery.Skip(skipNumber).Take(query.PageSize).ToListAsync();
 
             return drinks.Select(d => d.ToDrinkDto()).ToList();
         }
