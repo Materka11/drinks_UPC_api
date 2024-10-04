@@ -70,7 +70,9 @@ namespace api.Respository
                 }
             }
 
-            var brands = await brandsQuery.ToListAsync();
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+
+            var brands = await brandsQuery.Skip(skipNumber).Take(query.PageSize).ToListAsync();
 
             return brands.Select(b => b.ToBrandDto()).ToList();
         }
