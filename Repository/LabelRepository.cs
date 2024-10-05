@@ -33,7 +33,9 @@ namespace api.Respository
                 }
             }
 
-            var labels = await labelsQuery.ToListAsync();
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+
+            var labels = await labelsQuery.Skip(skipNumber).Take(query.PageSize).ToListAsync();
 
             return labels.Select(l => l.ToLabelDto()).ToList();
         }

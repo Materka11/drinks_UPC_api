@@ -57,7 +57,9 @@ namespace api.Respository
                 }
             }
 
-            var producers = await producersQuery.ToListAsync();
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+
+            var producers = await producersQuery.Skip(skipNumber).Take(query.PageSize).ToListAsync();
 
             return producers.Select(p => p.ToProducerDto()).ToList();
         }
